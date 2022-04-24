@@ -68,12 +68,19 @@ public sealed class BuildRtlSdrTask : FrostingTask<BuildContext>
             ToolPath = context.CMakePath
         });
 
+        // Set the MSBuild target architecture
+        PlatformTarget architecture = context.Settings.Architecture switch
+        {
+            "arm64" => PlatformTarget.ARM64,
+            _ => PlatformTarget.x64
+        };
+
         // Build rtl-sdr using the VS 2022 build tools
         context.MSBuild("../contrib/rtl-sdr/build/src/rtl_sdr.vcxproj", new MSBuildSettings
         {
             Configuration = context.Settings.BuildConfiguration,
             MSBuildPlatform = MSBuildPlatform.x64,
-            PlatformTarget = PlatformTarget.x64,
+            PlatformTarget = architecture,
             ToolPath = context.MsBuildPath
         });
 
