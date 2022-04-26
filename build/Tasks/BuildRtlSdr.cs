@@ -53,13 +53,20 @@ public sealed class BuildRtlSdrTask : FrostingTask<BuildContext>
         // Create a build directory for the output from CMake
         context.EnsureDirectoryExists("../contrib/rtl-sdr/build");
 
+        // Set libusb library path
+        FilePath libUsbPath = context.Settings.Architecture switch
+        {
+            "arm64" => "../contrib/libusb/arm64/Release/dll/libusb-1.0.lib",
+            _ => "../contrib/libusb/x64/Release/dll/libusb-1.0.lib"
+        };
+
         // Generate a Visual C++ project for rtl-sdr
         context.CMake("../contrib/rtl-sdr", new CMakeSettings
         {
             Generator = "Visual Studio 17 2022",
             Options = new List<string>()
             {
-                { $"-DLIBUSB_LIBRARIES={context.MakeAbsolute(context.Directory("../contrib/libusb/x64/Release/dll/libusb-1.0.lib")).FullPath}" },
+                { $"-DLIBUSB_LIBRARIES={context.MakeAbsolute(libUsbPath).FullPath}" },
                 { $"-DLIBUSB_INCLUDE_DIRS={context.MakeAbsolute(context.Directory("../contrib/libusb/libusb")).FullPath}" },
                 { "-DPKG_CONFIG_EXECUTABLE=C:\\non\\existent\\app.exe" } // A valid pkg-config install breaks the build, so we point to a non-existent executable
             },

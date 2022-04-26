@@ -65,6 +65,11 @@ public sealed class BuildLibUsbTask : FrostingTask<BuildContext>
         }
 
         // Copy the built library to the artifacts folder
-        context.CopyFile("../contrib/libusb/x64/Release/dll/libusb-1.0.dll", outputPath);
+        FilePath builtLibraryPath = context.Settings.Architecture switch
+        {
+            "arm64" => "../contrib/libusb/arm64/Release/dll/libusb-1.0.dll",
+            _ => "../contrib/libusb/x64/Release/dll/libusb-1.0.dll"
+        };
+        context.CopyFile(builtLibraryPath, outputPath);
     }
 }
