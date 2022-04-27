@@ -20,6 +20,7 @@ jobs:
   app-build:
     name: Application Build
     strategy:
+      fail-fast: false
       matrix:
         architecture: [x64, arm64]
         os: [windows-latest, macos-latest, ubuntu-latest]
