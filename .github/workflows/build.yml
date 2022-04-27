@@ -27,13 +27,13 @@ jobs:
         include:
           - os: windows-latest
             id: win
-            script: build.ps1
+            script: .\build.ps1
           - os: macos-latest
             id: mac
-            script: build.sh
+            script: ./build.sh
           - os: ubuntu-latest
             id: linux
-            script: build.sh
+            script: ./build.sh
     runs-on: ${{ matrix.os }}
 
     permissions:
@@ -54,14 +54,14 @@ jobs:
 
       - name: Build libusb
         if: matrix.os == 'windows-latest'
-        run: .\${{ matrix.script }} --exclusive --architecture ${{ matrix.architecture }} -t BuildLibusb
+        run: ${{ matrix.script }} --exclusive --architecture ${{ matrix.architecture }} -t BuildLibusb
 
       - name: Build rtl-sdr
         if: matrix.os == 'windows-latest'
-        run: .\${{ matrix.script }} --exclusive --architecture ${{ matrix.architecture }} -t BuildRtlSdr
+        run: ${{ matrix.script }} --exclusive --architecture ${{ matrix.architecture }} -t BuildRtlSdr
 
       - name: Build StreamSDR
-        run: .\${{ matrix.script }} --exclusive --architecture ${{ matrix.architecture }} -t BuildStreamSDR
+        run: ${{ matrix.script }} --exclusive --architecture ${{ matrix.architecture }} -t BuildStreamSDR
 
       - name: Upload artifact
         if: github.ref_name == 'main' && github.event_name == 'push'
